@@ -1,64 +1,158 @@
 
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <meta charset="UTF-8">
-    <title>Hello Electron!</title>
+    <title>ElevenLabs TTS Pro (V1.3.4)</title>
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
-  </head>
-  <body>
-    <div class="container">
-      <h1>Simple TTS App</h1>
-      <textarea id="text-input" placeholder="Enter text here..." rows="10"></textarea>
-      <button id="speak-button">Speak</button>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <script src="renderer.js"></script>
+    <div id="app-container">
+        <header>
+            <h1>ElevenLabs TTS Pro (V1.3.4)</h1>
+            <div class="window-controls">
+                <button id="minimize-btn">-</button>
+                <button id="maximize-btn">[]</button>
+                <button id="close-btn">X</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="limit-info">
+                    <div class="limit-item">Hạn Mức (B): <span>7,000,000</span></div>
+                    <div class="limit-item">Đã Dùng (D): <span>457,118</span></div>
+                    <div class="limit-item">Còn Lại (E): <span>6,542,882</span></div>
+                </div>
+
+                <div class="button-group">
+                    <button class="upload-file">Upload File (.txt)</button>
+                    <button class="upload-dir">Upload Thư mục</button>
+                    <button class="delete-content">Xóa Nội Dung</button>
+                </div>
+
+                <div class="input-area">
+                    <textarea placeholder="Nhập văn bản của bạn vào đây..."></textarea>
+                </div>
+
+                <div class="tts-settings">
+                    <div class="section-title">TTS Options</div>
+                    <div class="inline-form-group">
+                        <label for="char-count">Ký tự:</label>
+                        <input type="text" id="char-count" value="0" readonly>
+                        <label for="chunk-count">Số câu/chunk:</label>
+                        <input type="number" id="chunk-count" value="5">
+                        <label for="total-chunks">Số chunks:</label>
+                        <input type="text" id="total-chunks" value="0" readonly>
+                        <label for="est-time">Thời lượng ước tính:</label>
+                        <input type="text" id="est-time" value="0.0 phút" readonly>
+                        <label for="wpm">WPM:</label>
+                        <input type="number" id="wpm" value="130">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="output-filename">Tên file output (.mp3):</label>
+                        <input type="text" id="output-filename" value="elevenlabs_audio">
+                        <button class="btn">...</button>
+                        <input type="checkbox" id="create-srt"> <label for="create-srt">Tạo file SRT</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="save-location">Lưu tại:</label>
+                        <input type="text" id="save-location" value="C:\Users\Toan Youtuber\Downloads\ElevenlabsTTSPro-Output">
+                        <button class="btn">Chọn Thư Mục Lưu...</button>
+                        <button class="btn">Mở Output</button>
+                    </div>
+
+                    <div class="inline-form-group">
+                        <label for="proxy-host">Proxy (host:port):</label>
+                        <input type="text" id="proxy-host">
+                        <input type="checkbox" id="auto-proxy"> <label for="auto-proxy">Tự động đổi IP Tuxler VPN</label>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="action-button start-tts">START TTS</button>
+                    <button class="action-button stop-tts">STOP</button>
+                    <button class="action-button merge-files">GHÉP FILES & TẠO SRT</button>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <div class="section-title">Voice Settings</div>
+                <div class="form-group">
+                    <label for="voice-id">Voice ID:</label>
+                    <input type="text" id="voice-id">
+                    <button class="btn">🔍</button>
+                </div>
+                <div class="form-group">
+                    <label for="saved-voices">Giọng đã lưu:</label>
+                    <select id="saved-voices">
+                        <option>Chưa có giọng nào được lưu</option>
+                    </select>
+                    <button class="btn">📁</button>
+                    <button class="btn">🔄</button>
+                </div>
+                <div class="voice-options-buttons">
+                    <button>Lưu giọng hiện tại</button>
+                </div>
+                <div class="form-group">
+                    <label for="model">Model:</label>
+                    <select id="model">
+                        <option>eleven_multilingual_v2</option>
+                    </select>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="auto-silence">
+                    <label for="auto-silence">Chèn khoảng lặng tự động</label>
+                    <button class="btn">Default</button>
+                </div>
+                <div class="inline-form-group">
+                    <label for="short-pause">Dấu nghỉ ngắn:</label>
+                    <input type="text" id="short-pause" value=", ;">
+                    <label for="short-pause-duration">TG nghỉ ngắn:</label>
+                    <input type="text" id="short-pause-duration" value="0.3s">
+                </div>
+                <div class="inline-form-group">
+                    <label for="long-pause">Dấu nghỉ dài:</label>
+                    <input type="text" id="long-pause" value=". ?!">
+                    <label for="long-pause-duration">TG nghỉ dài:</label>
+                    <input type="text" id="long-pause-duration" value="0.7s">
+                </div>
+                <button class="action-button">Xem/Chỉnh Sửa Chi Tiết SSML</button>
+                <div class="checkbox-group" style="margin-top: 15px;">
+                    <input type="checkbox" id="inter-chunk-pause" checked>
+                    <label for="inter-chunk-pause">Tạo khoảng lặng giữa các đoạn</label>
+                    <button class="btn">Default</button>
+                </div>
+                <div class="inline-form-group">
+                    <label for="inter-chunk-duration">TG nghỉ giữa đoạn:</label>
+                    <input type="text" id="inter-chunk-duration" value="1.0s">
+                </div>
+                <button class="action-button">Cài đặt âm thanh nâng cao</button>
+                <button class="action-button">GHÉP FILES & TẠO SRT</button>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label for="process-table">Bảng Xử Lý Chunks OK: 0/0</label>
+                    <div id="process-table" style="height: 100px; background-color: #3a3a3a; border-radius: 4px; overflow-y: auto;">
+                        <!-- Table content will go here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="status-bar">
+            <div class="credit-info">
+                <span>Trạng Thái: Đồng bộ credit hoàn tất. OK: 784, Lỗi: 0.</span>
+            </div>
+            <div class="footer-buttons">
+                <button class="btn">Gửi Phản Hồi</button>
+                <button class="btn">Lịch sử Updated</button>
+                <button class="btn">Hướng dẫn</button>
+                <button class="btn">Set Link (A)</button>
+            </div>
+        </footer>
     </div>
-    <style>
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        margin: auto;
-        padding: 2rem;
-        background-color: #f0f2f5;
-        color: #333;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
-      .container {
-        background-color: #ffffff;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 600px;
-        text-align: center;
-      }
-      h1 {
-        color: #2c3e50;
-        margin-bottom: 1.5rem;
-      }
-      textarea {
-        width: calc(100% - 20px);
-        padding: 10px;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        font-size: 1rem;
-        resize: vertical;
-      }
-      button {
-        background-color: #007bff;
-        color: white;
-        padding: 10px 20px;
-        border: none;
-        border-radius: 4px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.2s ease-in-out;
-      }
-      button:hover {
-        background-color: #0056b3;
-      }
-    </style>
-  </body>
+</body>
 </html>

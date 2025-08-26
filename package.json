@@ -5,7 +5,8 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "electron . --no-sandbox"
+    "start": "electron . --no-sandbox",
+    "build": "electron-builder"
   },
   "repository": {
     "type": "git",
@@ -18,7 +19,22 @@
     "url": "https://github.com/th-tuan-1402/tss-pro/issues"
   },
   "homepage": "https://github.com/th-tuan-1402/tss-pro#readme",
+  "build": {
+    "appId": "com.example.tts",
+    "productName": "ElevenLabs TTS Pro",
+    "win": {
+      "target": "nsis"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/electron/**/*"
+    ]
+  },
   "devDependencies": {
-    "electron": "^37.3.1"
+    "electron": "^37.3.1",
+    "electron-builder": "^26.0.12"
   }
 }
